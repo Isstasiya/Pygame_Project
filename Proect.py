@@ -4,6 +4,7 @@ import sys
 import argparse
 from random import choice
 
+k = 745
 geeeeee = '0'
 pause = True
 
@@ -115,7 +116,7 @@ def start_screen():
     textsurface_start_score = myfont_start_score.render('Best score:', False, (255, 255, 255))
     screen.blit(textsurface_start_score, (40, 40))
 
-    textsurface_start_score = myfont_start_score.render('0000', False, (255, 255, 255))
+    textsurface_start_score = myfont_start_score.render('00000', False, (255, 255, 255))
     screen.blit(textsurface_start_score, (220, 40))
 
     while True:
