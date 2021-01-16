@@ -4,7 +4,6 @@ import sys
 import argparse
 from random import choice
 
-k = 745
 geeeeee = '0'
 pause = True
 
@@ -52,17 +51,17 @@ def generate_level(level):
     return new_player, x, y
 
 pygame.init()
-screen_size = (1900, 1000)
+screen_size = (1900, 1000) #screen size
 screen = pygame.display.set_mode(screen_size)
 FPS = 60
 
 tile_images = {
     'wall': load_image('wall.png'),
-    'empty': load_image('grass.png')
+    'empty': load_image('grass.png') #all images
 }
 player_image = load_image('mar.png')
 
-tile_width = tile_height = 50
+tile_width = tile_height = 50 #tile size
 
 
 class Tile(pygame.sprite.Sprite):
@@ -101,7 +100,7 @@ def terminate():
     sys.exit
 
 
-def start_screen():
+def start_screen(): #shows start screen
     fon = pygame.transform.scale(load_image('fon.jpg'), screen_size)
     screen.blit(fon, (0, 0))
     pygame.draw.rect(screen, (180, 0, 0), (730, 400, 400, 200), 4)
@@ -137,6 +136,13 @@ def load_level(filename):
     max_width = max(map(len, level_map))
     return list(map(lambda x: list(x.ljust(max_width, '.')), level_map))
 
+def pause_def():
+    pygame.font.init()
+    myfont_pause = pygame.font.SysFont('Comic Sans MS', 100)
+    textsurface_pause = myfont_pause.render('Pause', False, (0, 0, 0))
+    screen.blit(textsurface_pause, (800, 400))
+    global pause
+    pause = not pause
 
 def generate_level(level):
     new_player, x, y = None, None, None
@@ -168,7 +174,7 @@ def move(hero, movement):
         if x < max_x - 1 and level_map[y][x + 1] == ".":
             hero.move(x + 1, y)
 
-
+#show start screen
 start_screen()
 
 level_map = load_level(map_file)
@@ -194,14 +200,13 @@ while running:
                     move(hero, "left")
                 elif event.key == pygame.K_RIGHT:
                     move(hero, "right")
+
+
             if event.key == pygame.K_p:
-
-                pygame.font.init()
-                myfont_pause = pygame.font.SysFont('Comic Sans MS', 100)
-                textsurface_pause = myfont_pause.render('Pause', False, (0, 0, 0))
-                screen.blit(textsurface_pause, (800, 400))
-
-                pause = not pause
+                pause_def()
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            if event.pos[0] > 1800 and event.pos[0] < 1842 and event.pos[1] > 955 and event.pos[1] < 955 + 42:
+                pause_def()
 
     if pause:
         screen.fill(pygame.Color("black"))
@@ -229,6 +234,14 @@ while running:
 
         textsurface_score_n = myfont.render(geeeeee, False, (255, 255, 255))
         screen.blit(textsurface_score_n, (660, 955))
+
+        textsurface_pause = myfont.render('Pause - P(key)', False, (255, 255, 255))
+        screen.blit(textsurface_pause, (800, 955))
+# draw pause button
+        pygame.draw.rect(screen, (255, 255, 255), (1800, 955, 42, 42), 2)
+        pygame.draw.rect(screen, (50, 50, 50), (1802, 957, 42 - 3, 42 - 3), 0)
+        pygame.draw.rect(screen, (100, 100, 100), (1802 + 9, 957 + 6, 6, 42 - 15), 0)
+        pygame.draw.rect(screen, (100, 100, 100), (1802 + 25, 957 + 6, 6, 42 - 15), 0)
 
 
     clock.tick(FPS)
