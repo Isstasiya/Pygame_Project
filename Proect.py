@@ -4,8 +4,12 @@ import sys
 import argparse
 from random import choice
 
+# sound_boom = pygame.mixer.Sound('Data/boom.ogg')
+# sound_boom.play()
+pygame.mixer.pre_init(44100, -16, 1, 512)
 geeeeee = '0'
 pause = True
+music = ['1_music.mp3', '2_music.mp3', '3_music.mp3']
 
 maps = ["map.map", "close_zone.map", "free_zone.map"]
 parser = argparse.ArgumentParser()
@@ -104,6 +108,10 @@ def terminate():
 
 
 def start_screen(): #shows start screen
+    pygame.mixer.music.load('Data/start_window.mp3')
+    pygame.mixer.music.set_volume(0.5)
+    pygame.mixer.music.play(-1)
+
     fon = pygame.transform.scale(load_image('fon.jpg'), screen_size)
     screen.blit(fon, (0, 0))
     pygame.draw.rect(screen, (180, 0, 0), (800, 430, 400, 200), 4)
@@ -127,6 +135,7 @@ def start_screen(): #shows start screen
                 terminate()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.pos[0] > 800 and event.pos[0] < 800 + 400 and event.pos[1] > 430 and event.pos[1] < 430 + 200:
+                    pygame.mixer.music.stop()
                     return
         pygame.display.flip()
         clock.tick(FPS)
@@ -146,6 +155,10 @@ def pause_def():
     screen.blit(textsurface_pause, (800, 400))
     global pause
     pause = not pause
+    if pause:
+        pygame.mixer.music.unpause()
+    else:
+        pygame.mixer.music.pause()
 
 def generate_level(level):
     new_player, x, y = None, None, None
@@ -184,6 +197,16 @@ start_screen()
 
 level_map = load_level(map_file)
 hero, max_x, max_y = generate_level(level_map)
+#музыка в игре
+pygame.mixer.music.load('Data/' + music[0])
+pygame.mixer.music.set_volume(0.5)
+pygame.mixer.music.play(1)
+pygame.mixer.music.queue('Data/' + music[1])
+pygame.mixer.music.set_volume(0.5)
+pygame.mixer.music.play(1)
+pygame.mixer.music.queue('Data/' + music[2])
+pygame.mixer.music.set_volume(0.5)
+pygame.mixer.music.play(-1)
 
 while running:
     for event in pygame.event.get():
@@ -205,7 +228,6 @@ while running:
                     move(hero, "left")
                 elif event.key == pygame.K_RIGHT:
                     move(hero, "right")
-
 
             if event.key == pygame.K_p:
                 pause_def()
@@ -247,7 +269,6 @@ while running:
         pygame.draw.rect(screen, (50, 50, 50), (1802, 957, 42 - 3, 42 - 3), 0)
         pygame.draw.rect(screen, (100, 100, 100), (1802 + 9, 957 + 6, 6, 42 - 15), 0)
         pygame.draw.rect(screen, (100, 100, 100), (1802 + 25, 957 + 6, 6, 42 - 15), 0)
-
 
     clock.tick(FPS)
     pygame.display.flip()
