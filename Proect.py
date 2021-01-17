@@ -44,6 +44,8 @@ def generate_level(level):
                 Tile('empty', x, y)
             elif level[y][x] == '#':
                 Tile('wall', x, y)
+            elif level[y][x] == '/':
+                Tile('wall_2', x, y)
             elif level[y][x] == '@':
                 Tile('empty', x, y)
                 new_player = Player(x, y)
@@ -57,7 +59,8 @@ FPS = 60
 
 tile_images = {
     'wall': load_image('wall.png'),
-    'empty': load_image('grass.png') #all images
+    'empty': load_image('grass.png'),
+    'wall_2': load_image('wall_2.png')#all images
 }
 player_image = load_image('mar.png')
 
@@ -77,14 +80,14 @@ class Player(pygame.sprite.Sprite):
         super().__init__(hero_group)
         self.image = player_image
         self.rect = self.image.get_rect().move(
-            tile_width * pos_x + 15, tile_height * pos_y + 5)
+            tile_width * pos_x, tile_height * pos_y - 20)
         self.pos = (pos_x, pos_y)
 
     def move(self, x, y):
         self.pos_star = self.pos
         self.pos = (x, y)
         self.rect = self.image.get_rect().move(
-            tile_width * self.pos[0] + 15, tile_width * self.pos[1] + 5)
+            tile_width * self.pos[0], tile_width * self.pos[1] - 20)
 
 
 player = None
@@ -103,27 +106,27 @@ def terminate():
 def start_screen(): #shows start screen
     fon = pygame.transform.scale(load_image('fon.jpg'), screen_size)
     screen.blit(fon, (0, 0))
-    pygame.draw.rect(screen, (180, 0, 0), (730, 400, 400, 200), 4)
-    pygame.draw.rect(screen, (50, 50, 50), (733, 403, 400 - 4, 200 - 4), 0)
+    pygame.draw.rect(screen, (180, 0, 0), (800, 430, 400, 200), 4)
+    pygame.draw.rect(screen, (50, 50, 50), (803, 433, 400 - 4, 200 - 4), 0)
 
     pygame.font.init()
     myfont_start = pygame.font.Font('Data/20051.ttf', 100)
     textsurface_start = myfont_start.render('Start', False, (200, 200, 200))
-    screen.blit(textsurface_start, (800, 430))
+    screen.blit(textsurface_start, (870, 460))
 
     myfont_start_score = pygame.font.Font('Data/19950.otf', 50)
     textsurface_start_score = myfont_start_score.render('Best score:', False, (255, 255, 255))
-    screen.blit(textsurface_start_score, (40, 40))
+    screen.blit(textsurface_start_score, (20, 940))
 
     textsurface_start_score = myfont_start_score.render('00000', False, (255, 255, 255))
-    screen.blit(textsurface_start_score, (220, 40))
+    screen.blit(textsurface_start_score, (200, 940))
 
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 terminate()
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                if event.pos[0] > 730 and event.pos[0] < 730 + 400 and event.pos[1] > 400 and event.pos[1] < 400 + 200:
+                if event.pos[0] > 800 and event.pos[0] < 800 + 400 and event.pos[1] > 430 and event.pos[1] < 430 + 200:
                     return
         pygame.display.flip()
         clock.tick(FPS)
@@ -152,6 +155,8 @@ def generate_level(level):
                 Tile('empty', x, y)
             elif level[y][x] == '#':
                 Tile('wall', x, y)
+            elif level[y][x] == '/':
+                Tile('wall_2', x, y)
             elif level[y][x] == '@':
                 Tile('empty', x, y)
                 new_player = Player(x, y)
