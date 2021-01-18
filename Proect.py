@@ -31,33 +31,8 @@ def load_image(name, color_key=None):
         image.set_colorkey(color_key)
     return image
 
-
-def load_level(filename):
-    filename = "data/" + filename
-    with open(filename, 'r') as mapFile:
-        level_map = [line.strip() for line in mapFile]
-    max_width = max(map(len, level_map))
-    return list(map(lambda x: list(x.ljust(max_width, '.')), level_map))
-
-
-def generate_level(level):
-    new_player, x, y = None, None, None
-    for y in range(len(level)):
-        for x in range(len(level[y])):
-            if level[y][x] == '.':
-                Tile('empty', x, y)
-            elif level[y][x] == '#':
-                Tile('wall', x, y)
-            elif level[y][x] == '/':
-                Tile('wall_2', x, y)
-            elif level[y][x] == '@':
-                Tile('empty', x, y)
-                new_player = Player(x, y)
-                level[y][x] = "."
-    return new_player, x, y
-
 pygame.init()
-screen_size = (1900, 1000) #screen size
+screen_size = (1200, 800) #screen size
 screen = pygame.display.set_mode(screen_size)
 FPS = 60
 
@@ -114,27 +89,27 @@ def start_screen(): #shows start screen
 
     fon = pygame.transform.scale(load_image('fon.jpg'), screen_size)
     screen.blit(fon, (0, 0))
-    pygame.draw.rect(screen, (180, 0, 0), (800, 430, 400, 200), 4)
-    pygame.draw.rect(screen, (50, 50, 50), (803, 433, 400 - 4, 200 - 4), 0)
+    pygame.draw.rect(screen, (180, 0, 0), (440, 270, 400, 200), 4)
+    pygame.draw.rect(screen, (50, 50, 50), (443, 273, 400 - 4, 200 - 4), 0)
 
     pygame.font.init()
     myfont_start = pygame.font.Font('Data/20051.ttf', 100)
     textsurface_start = myfont_start.render('Start', False, (200, 200, 200))
-    screen.blit(textsurface_start, (870, 460))
+    screen.blit(textsurface_start, (510, 300))
 
     myfont_start_score = pygame.font.Font('Data/19950.otf', 50)
     textsurface_start_score = myfont_start_score.render('Best score:', False, (255, 255, 255))
-    screen.blit(textsurface_start_score, (20, 940))
+    screen.blit(textsurface_start_score, (20, 740))
 
     textsurface_start_score = myfont_start_score.render('00000', False, (255, 255, 255))
-    screen.blit(textsurface_start_score, (200, 940))
+    screen.blit(textsurface_start_score, (200, 740))
 
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 terminate()
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                if event.pos[0] > 800 and event.pos[0] < 800 + 400 and event.pos[1] > 430 and event.pos[1] < 430 + 200:
+                if event.pos[0] > 440 and event.pos[0] < 440 + 400 and event.pos[1] > 270 and event.pos[1] < 270 + 200:
                     pygame.mixer.music.stop()
                     return
         pygame.display.flip()
@@ -152,7 +127,7 @@ def pause_def():
     pygame.font.init()
     myfont_pause = pygame.font.SysFont('Comic Sans MS', 100)
     textsurface_pause = myfont_pause.render('Pause', False, (0, 0, 0))
-    screen.blit(textsurface_pause, (800, 400))
+    screen.blit(textsurface_pause, (500, 250))
     global pause
     pause = not pause
     if pause:
@@ -218,7 +193,7 @@ while running:
                 pygame.font.init()
                 myfont_pause = pygame.font.SysFont('Comic Sans MS', 100)
                 textsurface_pause = myfont_pause.render('', False, (0, 0, 0))
-                screen.blit(textsurface_pause, (800, 400))
+                screen.blit(textsurface_pause, (300, 100))
 
                 if event.key == pygame.K_UP:
                     move(hero, "up")
@@ -232,7 +207,7 @@ while running:
             if event.key == pygame.K_p:
                 pause_def()
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            if event.pos[0] > 1800 and event.pos[0] < 1842 and event.pos[1] > 955 and event.pos[1] < 955 + 42:
+            if event.pos[0] > 1150 and event.pos[0] < 1192 and event.pos[1] > 755 and event.pos[1] < 755 + 42:
                 pause_def()
 
     if pause:
@@ -243,32 +218,32 @@ while running:
 
         image_player = pygame.image.load('data/mar.png')
         image_player = image_player.convert_alpha()
-        screen.blit(image_player, (90, 955))
+        screen.blit(image_player, (90, 755))
         pygame.font.init()
         myfont = pygame.font.SysFont('Comic Sans MS', 30)
         textsurface_you = myfont.render('You:', False, (255, 255, 255))
-        screen.blit(textsurface_you, (10, 955))
+        screen.blit(textsurface_you, (10, 750))
 
         textsurface_bestscore = myfont.render('Best score:', False, (255, 255, 255))
-        screen.blit(textsurface_bestscore, (200, 955))
+        screen.blit(textsurface_bestscore, (200, 755))
 
         geeeeee = str(int(geeeeee) + 1)
         textsurface_bestscore_n = myfont.render(geeeeee, False, (255, 255, 255))
-        screen.blit(textsurface_bestscore_n, (370, 955))
+        screen.blit(textsurface_bestscore_n, (370, 755))
 
         textsurface_score = myfont.render('Score:', False, (255, 255, 255))
-        screen.blit(textsurface_score, (550, 955))
+        screen.blit(textsurface_score, (470, 755))
 
         textsurface_score_n = myfont.render(geeeeee, False, (255, 255, 255))
-        screen.blit(textsurface_score_n, (660, 955))
+        screen.blit(textsurface_score_n, (600, 755))
 
         textsurface_pause = myfont.render('Pause - P(key)', False, (255, 255, 255))
-        screen.blit(textsurface_pause, (800, 955))
+        screen.blit(textsurface_pause, (750, 755))
 # draw pause button
-        pygame.draw.rect(screen, (255, 255, 255), (1800, 955, 42, 42), 2)
-        pygame.draw.rect(screen, (50, 50, 50), (1802, 957, 42 - 3, 42 - 3), 0)
-        pygame.draw.rect(screen, (100, 100, 100), (1802 + 9, 957 + 6, 6, 42 - 15), 0)
-        pygame.draw.rect(screen, (100, 100, 100), (1802 + 25, 957 + 6, 6, 42 - 15), 0)
+        pygame.draw.rect(screen, (255, 255, 255), (1150, 755, 42, 42), 2)
+        pygame.draw.rect(screen, (50, 50, 50), (1152, 757, 42 - 3, 42 - 3), 0)
+        pygame.draw.rect(screen, (100, 100, 100), (1152 + 9, 757 + 6, 6, 42 - 15), 0)
+        pygame.draw.rect(screen, (100, 100, 100), (1152 + 25, 757 + 6, 6, 42 - 15), 0)
 
     clock.tick(FPS)
     pygame.display.flip()
