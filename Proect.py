@@ -3,11 +3,12 @@ import os
 import sys
 import argparse
 from random import choice
+import sqlite3
 
 # sound_boom = pygame.mixer.Sound('Data/boom.ogg')
 # sound_boom.play()
 pygame.mixer.pre_init(44100, -16, 1, 512)
-geeeeee = '0'
+geeeeee = 0
 pause = True
 music = ['1_music.mp3', '2_music.mp3', '3_music.mp3']
 
@@ -84,7 +85,7 @@ def terminate():
 
 def start_screen(): #shows start screen
     pygame.mixer.music.load('Data/start_window.mp3')
-    pygame.mixer.music.set_volume(0.5)
+    pygame.mixer.music.set_volume(0.3)
     pygame.mixer.music.play(-1)
 
     fon = pygame.transform.scale(load_image('fon.jpg'), screen_size)
@@ -227,14 +228,18 @@ while running:
         textsurface_bestscore = myfont.render('Best score:', False, (255, 255, 255))
         screen.blit(textsurface_bestscore, (200, 755))
 
-        geeeeee = str(int(geeeeee) + 1)
-        textsurface_bestscore_n = myfont.render(geeeeee, False, (255, 255, 255))
+        con = sqlite3.connect('database')
+        cur = con.cursor()
+        result = cur.execute("""SELECT res FROM results WHERE id_res = 1""").fetchall()
+        textsurface_bestscore_n = myfont.render(str(result[0][0]), False, (255, 255, 255))
         screen.blit(textsurface_bestscore_n, (370, 755))
+        con.close()
 
         textsurface_score = myfont.render('Score:', False, (255, 255, 255))
         screen.blit(textsurface_score, (470, 755))
 
-        textsurface_score_n = myfont.render(geeeeee, False, (255, 255, 255))
+        geeeeee += 1
+        textsurface_score_n = myfont.render(str(geeeeee), False, (255, 255, 255))
         screen.blit(textsurface_score_n, (600, 755))
 
         textsurface_pause = myfont.render('Pause - P(key)', False, (255, 255, 255))
