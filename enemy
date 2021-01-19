@@ -1,0 +1,149 @@
+def move1(hero, movement, k=False):
+    x, y = hero.pos
+    print(x, y, movement)
+    print(plan)
+    if movement == "up":
+        if y > 0 and level_map[y - 1][x] == ".":
+            hero.move(x, y - 1)
+        elif not k:
+            print(2, y <= 0, level_map[y - 1][x] != ".")
+            while y <= 0 or level_map[y - 1][x] != ".":
+                if x > 0 and level_map[y][x - 1] == "." and not ["left", (x - 1, y)] in plan:
+                    move1(hero, "left", k=True)
+                    x, y = hero.pos
+                elif x < max_x - 1 and level_map[y][x + 1] == "." and not ["right", (x + 1, y)] in plan:
+                    if ["left", (x, y)] in plan:
+                        plan.append(["left", (x, y)])
+                    move1(hero, "right", k=True)
+                    x, y = hero.pos
+                elif y < max_y - 1 and level_map[y + 1][x] == "." and not ["down", (x, y + 1)] in plan:
+                    plan.append(["left", (x, y)])
+                    plan.append(["right", (x, y)])
+                    move1(hero, "down", k=True)
+                    x, y = hero.pos
+                else:
+                    plan.append(["left", (x, y)])
+                    plan.append(["right", (x, y)])
+                    plan.append(["down", (x, y)])
+        else:
+            plan.append([movement, (x, y)])
+    elif movement == "down":
+        if y < max_y - 1 and level_map[y + 1][x] == ".":
+            hero.move(x, y + 1)
+        elif not k:
+            print(2, y >= max_y - 1, level_map[y + 1][x] != ".")
+            while y >= max_y - 1 or level_map[y + 1][x] != ".":
+                if x > 0 and level_map[y][x - 1] == "." and not ["left", (x - 1, y)] in plan:
+                    move1(hero, "left", k=True)
+                    x, y = hero.pos
+                elif x < max_x - 1 and level_map[y][x + 1] == "." and not ["right", (x + 1, y)] in plan:
+                    plan.append(["left", (x, y)])
+                    move1(hero, "right", k=True)
+                    x, y = hero.pos
+                elif y > 0 and level_map[y - 1][x] == "." and not ["up", (x, y - 1)] in plan:
+                    plan.append(["left", (x, y)])
+                    plan.append(["right", (x, y)])
+                    move1(hero, "up", k=True)
+                    x, y = hero.pos
+                else:
+                    plan.append(["left", (x, y)])
+                    plan.append(["right", (x, y)])
+                    plan.append(["up", (x, y)])
+        else:
+            plan.append([movement, (x, y)])
+    elif movement == "left":
+        if x > 0 and level_map[y][x - 1] == ".":
+            hero.move(x - 1, y)
+        elif not k:
+            print(2, x <= 0, level_map[y][x - 1] != ".")
+            while x <= 0 or level_map[y][x - 1] != ".":
+                if y < max_y - 1 and level_map[y + 1][x] == "." and not ["down", (x, y + 1)] in plan:
+                    move1(hero, "down", k=True)
+                    x, y = hero.pos
+                elif y > 0 and level_map[y - 1][x] == "." and not ["up", (x, y - 1)] in plan:
+                    plan.append(["down", (x, y)])
+                    move1(hero, "up", k=True)
+                    x, y = hero.pos
+                elif x < max_x - 1 and level_map[y][x + 1] == "." and not ["right", (x + 1, y)] in plan:
+                    move1(hero, "right", k=True)
+                    plan.append(["down", (x, y)])
+                    plan.append(["up", (x, y)])
+                    x, y = hero.pos
+                else:
+                    plan.append(["down", (x, y)])
+                    plan.append(["up", (x, y)])
+                    plan.append(["right", (x, y)])
+        else:
+            plan.append([movement, (x, y)])
+    elif movement == "right":
+        if x < max_x - 1 and level_map[y][x + 1] == ".":
+            hero.move(x + 1, y)
+        elif not k:
+            print(2, x >= max_x - 1, level_map[y][x + 1] != ".")
+            while x >= max_x - 1 or level_map[y][x + 1] != ".":
+                if y < max_y - 1 and level_map[y + 1][x] == "." and not ["down", (x, y + 1)] in plan:
+move1(hero, "down", k=True)
+                    x, y = hero.pos
+                elif y > 0 and level_map[y - 1][x] == "." and not ["up", (x, y - 1)] in plan:
+                    plan.append(["down", (x, y)])
+                    move1(hero, "up", k=True)
+                    x, y = hero.pos
+                elif x > 0 and level_map[y][x - 1] == "." and not ["left", (x - 1, y)] in plan:
+                    plan.append(["down", (x, y)])
+                    plan.append(["up", (x, y)])
+                    move1(hero, "left", k=True)
+                    x, y = hero.pos
+                else:
+                    plan.append(["down", (x, y)])
+                    plan.append(["up", (x, y)])
+                    plan.append(["left", (x, y)])
+        else:
+            plan.append([movement, (x, y)])
+class Base(pygame.sprite.Sprite):
+    def init(self, tye, lvl):
+        super().init(vill_group)
+        self.connection = sqlite3.connect("database")
+        rr = self.connection.cursor().execute(f"""SELECT * FROM sprites WHERE name='{tye}' and id_level ='{lvl}'""").fetchall()
+        rk = self.connection.cursor().execute(f"""SELECT * FROM levels WHERE id_level ='{lvl}'""").fetchall()
+        self.image = pygame.image.load('Data/' + rr[0][3])
+        m = randint(0, max_x)
+        n = randint(0, max_y)
+        self.f = ''
+        while True:
+            if m < max_x and n < max_y:
+                if level_map[n][m] != ".":
+                    m = randint(0, max_x)
+                    n = randint(0, max_y)
+                else:
+                    self.rect = self.image.get_rect().move(tile_width * m, tile_width * n - 20)
+                    self.pos = (m, n)
+                    vill_group.draw(screen)
+                    pygame.display.flip()
+                    break
+            else:
+                m = randint(0, max_x)
+                n = randint(0, max_y)
+        self.live = 3
+        self.update()
+
+    def update(self):
+        while self.pos[0] + 8 < hero.pos[0]:
+            move1(self, "right")
+        while self.pos[0] - 8 > hero.pos[0]:
+            move1(self, "left")
+        while self.pos[1] + 8 < hero.pos[1]:
+            move1(self, "down")
+        while self.pos[1] - 8 > hero.pos[1]:
+            move1(self, "up")
+
+    def move(self, x, y):
+        self.pos_star = self.pos
+        self.pos = (x, y)
+        self.rect = self.image.get_rect().move(
+            tile_width * self.pos[0], tile_width * self.pos[1] - 20)
+        screen.fill(pygame.Color("black"))
+        sprite_group.draw(screen)
+        hero_group.draw(screen)
+        vill_group.draw(screen)
+        pygame.display.flip()
+        pygame.time.wait(200)
