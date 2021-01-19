@@ -3,9 +3,13 @@ import os
 import sys
 import argparse
 from random import choice
+import sqlite3
 
 # sound_boom = pygame.mixer.Sound('Data/boom.ogg')
 # sound_boom.play()
+con = sqlite3.connect('database')
+cur = con.cursor()
+result = cur.execute("""SELECT res FROM results WHERE id_res = 1""").fetchall()
 pygame.mixer.pre_init(44100, -16, 1, 512)
 geeeeee = '0'
 pause = True
@@ -20,7 +24,7 @@ map_file = args.map
 
 
 def load_image(name, color_key=None):
-    fullname = os.path.join('data', name)
+    fullname = os.path.join('data/', name)
     try:
         image = pygame.image.load(fullname)
     except pygame.error as message:
@@ -35,13 +39,12 @@ def load_image(name, color_key=None):
 
 
 pygame.init()
-screen_size = (1200, 700)  # screen size
+screen_size = (1200, 800)  # screen size
 screen = pygame.display.set_mode(screen_size)
 FPS = 60
 
 tile_images = {
-    'wall': load_image('wall.png'),
-    'wall_2': load_image('wall_2.png'),
+    'wall': load_image('box.png'),
     'box': load_image('box.png'),
     'br': load_image('br.png'),
     '1': load_image('1.png'),
@@ -127,12 +130,13 @@ def start_screen():  # shows start screen
     textsurface_start_score = myfont_start_score.render('Best score:', False, (255, 255, 255))
     screen.blit(textsurface_start_score, (20, 740))
 
-    textsurface_start_score = myfont_start_score.render('00000', False, (255, 255, 255))
+    textsurface_start_score = myfont_start_score.render(str(result[0][0]), False, (255, 255, 255))
     screen.blit(textsurface_start_score, (200, 740))
 
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                con.close()
                 terminate()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.pos[0] > 440 and event.pos[0] < 440 + 400 and event.pos[1] > 270 and event.pos[1] < 270 + 200:
@@ -176,8 +180,6 @@ def generate_level(level):
                 Tile(a, x, y)
             elif level[y][x] == '1':
                 Tile('wall', x, y)
-            elif level[y][x] == '2':
-                Tile('wall_2', x, y)
             elif level[y][x] == '3':
                 Tile('br', x, y)
             elif level[y][x] == '4':
@@ -246,6 +248,7 @@ hero, max_x, max_y = generate_level(level_map)
 up, ball = "right", []
 draw = False
 up_ms = []
+
 # музыка в игре
 pygame.mixer.music.load('Data/' + music[0])
 pygame.mixer.music.set_volume(0.1)
@@ -309,7 +312,8 @@ while running:
     for i in range(len(ball)):
         image = load_image('bl.png')
         # print(ball)
-        shot(Bullet(ball[i][0], ball[i][1]), up_ms[i])
+        ball_1 = Bullet(ball[i][0], ball[i][1])
+        shot(ball_1, up_ms[i])
         rect = image.get_rect().move(
             tile_width * ball[i][0], tile_width * ball[i][1] - 20)
         if draw:
@@ -340,7 +344,7 @@ while running:
         screen.blit(textsurface_bestscore, (200, 755))
 
         geeeeee = str(int(geeeeee) + 1)
-        textsurface_bestscore_n = myfont.render(geeeeee, False, (255, 255, 255))
+        textsurface_bestscore_n = myfont.render(str(result[0][0]), False, (255, 255, 255))
         screen.blit(textsurface_bestscore_n, (370, 755))
 
         textsurface_score = myfont.render('Score:', False, (255, 255, 255))
